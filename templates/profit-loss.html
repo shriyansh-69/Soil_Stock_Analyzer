@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="analysis-wrapper">
+
+    <!-- Header -->
+    <div class="analysis-header">
+        <h1>Profit & Loss Analysis</h1>
+        <p>Analyze stock performance between selected trading dates.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="analysis-card">
+
+        <form method="post" action="/profit-loss" class="analysis-form">
+
+            <!-- Ticker -->
+            <div class="form-group">
+                <label for="ticker">Ticker Symbol</label>
+                <input type="text"
+                       id="ticker"
+                       name="ticker"
+                       value="{{ ticker or '' }}"
+                       placeholder="e.g. RELIANCE.NS"
+                       required>
+            </div>
+
+            <!-- Dates -->
+            <div class="date-row">
+
+                <div class="form-group">
+                    <label for="buy_date">Buy Date</label>
+                    <input type="date"
+                           id="buy_date"
+                           name="buy_date"
+                           value="{{ buy_date or '' }}"
+                           max="{{ today }}"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sell_date">Sell Date</label>
+                    <input type="date"
+                           id="sell_date"
+                           name="sell_date"
+                           value="{{ sell_date or '' }}"
+                           max="{{ today }}"
+                           required>
+                </div>
+
+            </div>
+
+            <!-- Plot Toggle -->
+            <div class="plot-toggle">
+
+                <span class="toggle-label">Show Plot:</span>
+
+                <label class="toggle-item">
+                    <input type="radio" name="plot" value="true">
+                    <span class="toggle-btn green">Show</span>
+                </label>
+
+                <label class="toggle-item">
+                    <input type="radio" name="plot" value="false" checked>
+                    <span class="toggle-btn red">Hide</span>
+                </label>
+
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="analyze-btn">
+                Analyze Trade
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if error %}
+    <div class="zen-alert zen-error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if result and not result.error %}
+
+    <!-- Result Card -->
+    <div class="trade-result {{ result.status }}">
+
+        <div class="money-highlight">
+            {% if result.status == "Profit" %}
+                + {{ result.total_profit }}
+            {% else %}
+                {{ result.total_profit }}
+            {% endif %}
+        </div>
+
+        <div class="result-details">
+            <div><span>Buy Price</span><strong>{{ result.buy_price }}</strong></div>
+            <div><span>Sell Price</span><strong>{{ result.sell_price }}</strong></div>
+            <div><span>Profit / Share</span><strong>{{ result.absolute_profit_per_share }}</strong></div>
+            <div><span>ROI</span><strong>{{ result.roi }}%</strong></div>
+            <div><span>Buy Used</span><strong>{{ result.buy_used }}</strong></div>
+            <div><span>Sell Used</span><strong>{{ result.sell_used }}</strong></div>
+        </div>
+
+    </div>
+
+    {% if result.plot_html %}
+    <div class="chart-wrapper">
+        {{ result.plot_html | safe }}
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

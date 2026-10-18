@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mutual Fund Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <div class="sidebar">
+        <h2>📊 Dashboard</h2>
+
+        <a href="/">Soil (Chatbot)</a>
+        <a href="/price_checker">Price Checker</a>
+        <a href="/RecentTrendAnalysis">Recent Trend Analysis</a>
+        <a href="/Custom_Date_Analysis">Custom Date Analysis</a>
+        <a href="/profit-loss">Profit/Loss</a>
+        <a href="/Graphplotter">Graph Plotter</a>
+        <a href="/Predictionmodel">Prediction Model</a>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+</body>
+</html>

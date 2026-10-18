@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="chat-wrapper">
+
+    <div class="chat-header">
+        <h2> Soil AI Assistant</h2>
+        <p>Ask about ticker symbols, companies, ETFs, or crypto.</p>
+        <p>You Can Ask The Chatbot About Ticker's </p>
+    </div>
+
+    <div id="chat-box" class="chat-box"></div>
+
+    <div class="chat-input-area">
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script>
+async function sendMessage() {
+
+    const input = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
+
+    let message = input.value.trim();
+    if (!message) return;
+
+    chatBox.innerHTML += `
+        <div class="message user-message">
+            ${message}
+        </div>
+    `;
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: message
+        })
+    });
+
+    const data = await response.json();
+
+    chatBox.innerHTML += `
+        <div class="message bot-message">
+            ${data.bot_response}
+        </div>
+    `;
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+    input.value = "";
+}
+</script>
+
+{% endblock %}

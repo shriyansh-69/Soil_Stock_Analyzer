@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="finance-container">
+
+    <h1>Market Price Lookup</h1>
+
+    <form method="post" class="finance-form">
+
+        <input type="text"
+               name="ticker"
+               placeholder="Ticker (AAPL, TCS.NS)"
+               value="{{ ticker or '' }}"
+               required>
+
+        <label class="date-label">
+            Choose price for a specific day
+            <span>(Default: Today)</span>
+        </label>
+
+    <div class="custom-date">
+    <input type="date"
+           name="selected_date"
+           value="{{ selected_date }}"
+           max="{{ today }}">
+    </div>
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    {% if result %}
+    <div class="mafia-card">
+
+        <div class="mafia-ticker">
+            {{ result.ticker }}
+        </div>
+
+        <div class="mafia-date">
+            {{ result.label }}
+        </div>
+
+        <div class="mafia-price">
+            {{ result.price }}
+            <span class="mafia-currency">{{ result.currency }}</span>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error-card">
+        {{ error }}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

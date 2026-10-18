@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="gp-page-title">Stock Graph Plotter</h1>
+
+<div class="gp-card">
+
+    {% if error %}
+        <div class="gp-error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="/plot">
+
+        <div class="gp-group">
+            <label>Ticker Symbol</label>
+            <input type="text"
+                   name="ticker"
+                   value="{{ ticker or '' }}"
+                   required>
+        </div>
+
+        <div class="gp-row">
+
+            <div class="gp-group">
+                <label>Start Date</label>
+                <input type="date"
+                       name="start_date"
+                       value="{{ start_date or '' }}"
+                       max="{{ today }}">
+            </div>
+
+            <div class="gp-group">
+                <label>End Date</label>
+                <input type="date"
+                       name="end_date"
+                       value="{{ end_date or '' }}"
+                       max="{{ today }}">
+            </div>
+
+        </div>
+
+        <div class="gp-group">
+            <label>Price Type</label>
+            <select name="price_type">
+
+                <option value="Open"
+                    {% if price_type == "Open" %}selected{% endif %}>
+                    Open
+                </option>
+
+                <option value="High"
+                    {% if price_type == "High" %}selected{% endif %}>
+                    High
+                </option>
+
+                <option value="Low"
+                    {% if price_type == "Low" %}selected{% endif %}>
+                    Low
+                </option>
+
+                <option value="Close"
+                    {% if price_type == "Close" or not price_type %}selected{% endif %}>
+                    Close
+                </option>
+
+            </select>
+        </div>
+
+        <div class="gp-group">
+            <label>Moving Averages</label>
+            <input type="text"
+                   name="moving_averages"
+                   value="{{ moving_averages or '' }}"
+                   placeholder="Example: 20,50">
+        </div>
+
+        <button type="submit" class="gp-btn">
+            Generate Chart
+        </button>
+
+    </form>
+
+</div>
+
+{% if plot_html %}
+<div class="gp-card">
+    {{ plot_html | safe }}
+</div>
+{% endif %}
+
+{% endblock %}

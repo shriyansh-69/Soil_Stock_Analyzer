@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="analysis-wrapper">
+
+    <div class="analysis-card">
+
+        <h1 class="analysis-title">
+            Recent Market Analyzer
+        </h1>
+
+        <!-- ✅ FIXED FORM TAG -->
+        <form method="post" class="analysis-form">
+
+            <!-- Ticker -->
+            <div class="form-group">
+                <label>Ticker</label>
+                <input type="text"
+                       name="ticker"
+                       placeholder="AAPL"
+                       value="{{ ticker or '' }}"
+                       required>
+            </div>
+
+            <!-- Price Type -->
+            <div class="form-group">
+                <label>Price Type</label>
+                <div class="checkbox-grid">
+                    {% for pt in ['All','Open','Close','High','Low','Average_Price'] %}
+                    <label class="checkbox-item">
+                        <input type="checkbox"
+                               name="price_type"
+                               value="{{ pt }}"
+                               {% if price_type and pt in price_type %}checked{% endif %}>
+                        <span>{{ pt }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Days -->
+            <div class="form-group">
+                <label>Number of Days (or 'all')</label>
+                <input type="text"
+                       name="n_day_input"
+                       value="{{ n_day_input or 'all' }}"
+                       required>
+            </div>
+
+            <!-- Operation -->
+            <div class="form-group">
+                <label>Operation</label>
+                <div class="checkbox-grid">
+                    {% for op in ['All','Lowest','Highest','Average'] %}
+                    <label class="checkbox-item">
+                        <input type="checkbox"
+                               name="operation"
+                               value="{{ op }}"
+                               {% if operation and op in operation %}checked{% endif %}>
+                        <span>{{ op }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="submit"
+                        name="action"
+                        value="analyze"
+                        class="btn-primary">
+                    Run Analysis
+                </button>
+
+                <button type="submit"
+                        name="action"
+                        value="plot"
+                        class="btn-outline">
+                    Plot Selected
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    {% if result_html %}
+    <div class="result-card">
+        <h2>Analysis Result</h2>
+        <div class="table-container">
+            {{ result_html | safe }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if plot_html %}
+    <div class="chart-card">
+        <h2>Interactive Chart</h2>
+        <div class="chart-container">
+            {{ plot_html | safe }}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

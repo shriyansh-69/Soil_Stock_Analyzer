@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="zen-layout">
+
+
+<div class="zen-card">
+
+    <h1>📅 Custom Date Market Analysis</h1>
+
+    {% if error %}
+        <div class="zen-alert zen-error">{{ error }}</div>
+    {% endif %}
+
+    {% if adjustment_message %}
+        <div class="zen-alert zen-adjust">{{ adjustment_message }}</div>
+    {% endif %}
+
+    <form method="post" action="/Custom_Date_Analysis">
+
+        <!-- Ticker -->
+        <div class="zen-group">
+            <label>Ticker Symbol</label>
+            <input type="text"
+                   name="ticker"
+                   value="{{ ticker or '' }}"
+                   placeholder="AAPL"
+                   required>
+        </div>
+
+        <!-- Date Row -->
+        <div class="zen-date-row">
+
+            <div class="zen-date-box">
+                <label>Start Date</label>
+                <input type="date"
+                       name="start_date"
+                       value="{{ start_date or '' }}"
+                       max="{{ today }}"
+                       required>
+            </div>
+
+            <div class="zen-date-box">
+                <label>End Date</label>
+                <input type="date"
+                       name="end_date"
+                       value="{{ end_date or '' }}"
+                       max="{{ today }}"
+                       required>
+            </div>
+
+        </div>
+
+        <!-- Price Type -->
+        <div class="zen-group">
+            <label>Select Price Type</label>
+            <div class="zen-options">
+                {% for pt in ['Open','Close','High','Low','Average_Price','All'] %}
+                <label class="zen-option">
+                    <input type="checkbox"
+                           name="price_type"
+                           value="{{ pt }}"
+                           {% if price_type and pt in price_type %}checked{% endif %}>
+                    <span>{{ pt }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Operation -->
+        <div class="zen-group">
+            <label>Select Operation</label>
+            <div class="zen-options">
+                {% for op in ['Lowest','Highest','Average','All'] %}
+                <label class="zen-option">
+                    <input type="checkbox"
+                           name="operation"
+                           value="{{ op }}"
+                           {% if operation and op in operation %}checked{% endif %}>
+                    <span>{{ op }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="zen-button-row">
+
+            <button type="submit"
+                    name="action"
+                    value="analyze"
+                    class="zen-btn-primary">
+                Analyze
+            </button>
+
+            <button type="submit"
+                    name="action"
+                    value="plot"
+                    class="zen-btn-outline">
+                Plot
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% if result_html %}
+<div class="zen-result-card">
+    <h2>📊 Analysis Result</h2>
+    <div class="zen-table-wrap">
+        {{ result_html | safe }}
+    </div>
+</div>
+{% endif %}
+
+{% if plot_html %}
+<div class="zen-chart-card">
+    <h2>📈 Price Chart</h2>
+    <div class="zen-chart-wrap">
+        {{ plot_html | safe }}
+    </div>
+</div>
+{% endif %}
+
+
+</div>
+
+{% endblock %}

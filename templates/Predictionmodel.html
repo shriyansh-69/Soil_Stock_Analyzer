@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="nova-forecast-shell">
+
+    <div class="nova-forecast-card">
+
+        <h1 class="nova-forecast-title">📈 30-Day Stock Prediction</h1>
+
+        {% if error %}
+        <div class="nova-error-box">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/predict" class="nova-forecast-form">
+
+            <div class="nova-input-group">
+                <label>Ticker Symbol</label>
+                <input type="text"
+                       name="ticker"
+                       value="{{ ticker or '' }}"
+                       placeholder="e.g. INFY.NS"
+                       required>
+            </div>
+
+            <div class="nova-button-row">
+                <button type="submit" class="nova-primary-btn">
+                    Run Prediction
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    {% if result %}
+
+    {% set trend_state =
+        "nova-neutral" if "HOLD" in result.signal
+        else "nova-rise" if "BUY" in result.signal
+        else "nova-fall" %}
+
+    <div class="nova-result-card {{ trend_state }}">
+
+        <div class="nova-signal-display">
+            {{ result.signal }}
+        </div>
+
+        <div class="nova-metric-grid">
+
+            <div class="nova-metric-box">
+                <span>Current Price</span>
+                <strong>₹ {{ "%.2f"|format(result.current_price) }}</strong>
+            </div>
+
+            <div class="nova-metric-box">
+                <span>Predicted Price (Day 30)</span>
+                <strong>₹ {{ "%.2f"|format(result.predicted_last_price) }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if result.chart %}
+    <div class="nova-chart-frame">
+        <h2>📊 Prediction Chart</h2>
+        <div class="nova-chart-wrap">
+            {{ result.chart | safe }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
